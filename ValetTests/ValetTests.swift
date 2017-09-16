@@ -623,6 +623,27 @@ class ValetSecureEnclaveTests: XCTestCase
         }
     }
 
+    func test_migrateObjectsFromValetRemoveOnCompletion_migratesDataSuccessfullyWhenBothValetsHavePreviouslyCalled_canAccessKeychain() {
+        let otherValet = VALValet(identifier: "Migrate_Me_To_Valet", accessibility: .afterFirstUnlock)!
+
+        // Clean up any dangling keychain items before we start this tests.
+        otherValet.removeAllObjects()
+
+        let keyStringPairToMigrateMap = ["foo" : "bar", "testing" : "migration", "is" : "quite", "entertaining" : "if", "you" : "don't", "screw" : "up"]
+        for (key, value) in keyStringPairToMigrateMap {
+            XCTAssertTrue(otherValet.setString(value, forKey: key))
+        }
+
+        XCTAssertTrue(valet.canAccessKeychain())
+        XCTAssertTrue(otherValet.canAccessKeychain())
+        XCTAssertNil(valet.migrateObjects(from: otherValet, removeOnCompletion: false))
+
+        for (key, value) in keyStringPairToMigrateMap {
+            XCTAssertEqual(valet.string(forKey: key), value)
+            XCTAssertEqual(otherValet.string(forKey: key), value)
+        }
+    }
+
     // MARK: Protected Methods
 
     func test_secItemFormatDictionaryWithKey()
