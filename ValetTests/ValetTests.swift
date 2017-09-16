@@ -347,7 +347,7 @@ class ValetTests: XCTestCase
         XCTAssertEqual(passcode, subclassValet.string(forKey: key))
 
         var mutableQuery = valet.baseQuery
-        mutableQuery.removeValue(forKey: kSecClass)
+        mutableQuery.removeValue(forKey: kSecClass as AnyHashable)
 
         // Without a kSecClass, the migration should fail.
         XCTAssertEqual(VALMigrationError.invalidQuery, subclassValet.migrateObjects(matchingQuery: mutableQuery, removeOnCompletion: false)?.valetMigrationError)
@@ -649,7 +649,7 @@ class ValetSecureEnclaveTests: XCTestCase
     func test_secItemFormatDictionaryWithKey()
     {
         let secItemDictionary = valet._secItemFormatDictionary(withKey: key)
-        XCTAssertEqual(key, secItemDictionary[kSecAttrAccount] as? String)
+        XCTAssertEqual(key, secItemDictionary[kSecAttrAccount as AnyHashable] as? String)
     }
 }
 
@@ -742,16 +742,16 @@ class ValetMacTests: XCTestCase
         // Add an entry to the keychain with an access control list.
         XCTAssertEqual(SecAccessCreate("Access Control List" as CFString, trustedList, &accessList), errSecSuccess)
         var accessListQuery = query
-        accessListQuery[kSecAttrAccess] = accessList
-        accessListQuery[kSecValueData] = vulnValue.data(using: .utf8)
+        accessListQuery[kSecAttrAccess as AnyHashable] = accessList
+        accessListQuery[kSecValueData as AnyHashable] = vulnValue.data(using: .utf8)
         XCTAssertEqual(SecItemAdd(accessListQuery as CFDictionary, nil), errSecSuccess)
 
         // The potentially vulnerable keychain item should exist in our Valet now.
         XCTAssertTrue(valet.containsObject(forKey: vulnKey))
 
         // Obtain a reference to the vulnerable keychain entry.
-        query[kSecReturnRef] = true
-        query[kSecReturnAttributes] = true
+        query[kSecReturnRef as AnyHashable] = true
+        query[kSecReturnAttributes as AnyHashable] = true
         var vulnerableEntryReference: CFTypeRef?
         XCTAssertEqual(SecItemCopyMatching(query as CFDictionary, &vulnerableEntryReference), errSecSuccess)
 
