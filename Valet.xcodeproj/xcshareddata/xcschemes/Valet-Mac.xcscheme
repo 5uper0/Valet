@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "26E682891BA8B4B200EFF4EA"
                BuildableName = "Valet.framework"
-               BlueprintName = "Valet-Mac"
+               BlueprintName = "Valet Mac"
                ReferencedContainer = "container:Valet.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -29,7 +29,26 @@
       language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "EAEAA88B1B167A8700F7AA98"
+               BuildableName = "Valet Mac Tests.xctest"
+               BlueprintName = "Valet Mac Tests"
+               ReferencedContainer = "container:Valet.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "26E682891BA8B4B200EFF4EA"
+            BuildableName = "Valet.framework"
+            BlueprintName = "Valet Mac"
+            ReferencedContainer = "container:Valet.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -49,7 +68,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "26E682891BA8B4B200EFF4EA"
             BuildableName = "Valet.framework"
-            BlueprintName = "Valet-Mac"
+            BlueprintName = "Valet Mac"
             ReferencedContainer = "container:Valet.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -67,7 +86,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "26E682891BA8B4B200EFF4EA"
             BuildableName = "Valet.framework"
-            BlueprintName = "Valet-Mac"
+            BlueprintName = "Valet Mac"
             ReferencedContainer = "container:Valet.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
