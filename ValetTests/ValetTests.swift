@@ -496,6 +496,27 @@ class ValetTests: XCTestCase
             XCTAssertEqual(subclassValet.string(forKey: key), value)
         }
     }
+
+    func test_migrateObjectsFromValetRemoveOnCompletion_migratesDataSuccessfullyWhenBothValetsHavePreviouslyCalled_canAccessKeychain() {
+        let otherValet = VALValet(identifier: "Migrate_Me_To_Valet", accessibility: .afterFirstUnlock)!
+
+        // Clean up any dangling keychain items before we start this tests.
+        otherValet.removeAllObjects()
+
+        let keyStringPairToMigrateMap = ["foo" : "bar", "testing" : "migration", "is" : "quite", "entertaining" : "if", "you" : "don't", "screw" : "up"]
+        for (key, value) in keyStringPairToMigrateMap {
+            XCTAssertTrue(otherValet.setString(value, forKey: key))
+        }
+
+        XCTAssertTrue(valet.canAccessKeychain())
+        XCTAssertTrue(otherValet.canAccessKeychain())
+        XCTAssertNil(valet.migrateObjects(from: otherValet, removeOnCompletion: false))
+
+        for (key, value) in keyStringPairToMigrateMap {
+            XCTAssertEqual(valet.string(forKey: key), value)
+            XCTAssertEqual(otherValet.string(forKey: key), value)
+        }
+    }
 }
 
 
@@ -620,27 +641,6 @@ class ValetSecureEnclaveTests: XCTestCase
         // Clean up items for the next test run (allKeys and removeAllObjects are unsupported in VALSecureEnclaveValet.
         for key in keyValuePairs.keys {
             XCTAssertTrue(valet.removeObject(forKey: key))
-        }
-    }
-
-    func test_migrateObjectsFromValetRemoveOnCompletion_migratesDataSuccessfullyWhenBothValetsHavePreviouslyCalled_canAccessKeychain() {
-        let otherValet = VALValet(identifier: "Migrate_Me_To_Valet", accessibility: .afterFirstUnlock)!
-
-        // Clean up any dangling keychain items before we start this tests.
-        otherValet.removeAllObjects()
-
-        let keyStringPairToMigrateMap = ["foo" : "bar", "testing" : "migration", "is" : "quite", "entertaining" : "if", "you" : "don't", "screw" : "up"]
-        for (key, value) in keyStringPairToMigrateMap {
-            XCTAssertTrue(otherValet.setString(value, forKey: key))
-        }
-
-        XCTAssertTrue(valet.canAccessKeychain())
-        XCTAssertTrue(otherValet.canAccessKeychain())
-        XCTAssertNil(valet.migrateObjects(from: otherValet, removeOnCompletion: false))
-
-        for (key, value) in keyStringPairToMigrateMap {
-            XCTAssertEqual(valet.string(forKey: key), value)
-            XCTAssertEqual(otherValet.string(forKey: key), value)
         }
     }
 
