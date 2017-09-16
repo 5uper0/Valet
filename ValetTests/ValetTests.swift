@@ -757,7 +757,7 @@ class ValetSynchronizableTests: XCTestCase
         
         // Removal
         XCTAssertTrue(localValet.setString("snake people", forKey: "millennials"))
-        XCTAssertFalse(valet.removeObject(forKey: "millennials"))
+        XCTAssertTrue(valet.removeObject(forKey: "millennials"))
         XCTAssertEqual("snake people", localValet.string(forKey: "millennials"))
     }
 
