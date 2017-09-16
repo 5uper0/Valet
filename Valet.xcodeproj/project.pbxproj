@@ -48,6 +48,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		16B4284F1F6DD4290052680B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EA1E1F7B1A8C46080067C991 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 26E6827B1BA8B3F900EFF4EA;
+			remoteInfo = "Valet-iOS";
+		};
 		371150B81E2962FC004A45D4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = EA1E1F7B1A8C46080067C991 /* Project object */;
@@ -403,6 +410,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				16B428501F6DD4290052680B /* PBXTargetDependency */,
 			);
 			name = ValetTouchIDTest;
 			productName = ValetTouchIDTest;
@@ -591,6 +599,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		16B428501F6DD4290052680B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 26E6827B1BA8B3F900EFF4EA /* Valet-iOS */;
+			targetProxy = 16B4284F1F6DD4290052680B /* PBXContainerItemProxy */;
+		};
 		371150B91E2962FC004A45D4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 371150A41E2962D8004A45D4 /* Valet iOS Test Host App */;
