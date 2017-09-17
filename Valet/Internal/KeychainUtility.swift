@@ -79,7 +79,7 @@ internal func set(object: Data, forKey key: String, options: [String: AnyHashabl
     #if os(macOS)
         // Never update an existing keychain item on OS X, since the existing item could have unauthorized apps in the Access Control List. Fixes zero-day Keychain vuln found here: https://drive.google.com/file/d/0BxxXk1d3yyuZOFlsdkNMSGswSGs/view
         _ = SecItem.delete(itemsMatching: secItemQuery)
-        secItemQuery[kSecValueData as String] = value
+        secItemQuery[kSecValueData as String] = object
         return SecItem.add(attributes: secItemQuery)
     #else
         
