@@ -60,7 +60,9 @@ class ValetTests: XCTestCase
     override func setUp()
     {
         super.setUp()
+        let baseQuery: [String : AnyHashable] = valet.baseQuery as! [String: AnyHashable]
         valet.removeAllObjects()
+        XCTAssert(valet.allKeys().isEmpty)
         subclassValet.removeAllObjects()
     }
 
