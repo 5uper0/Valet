@@ -26,6 +26,12 @@ internal enum Service: CustomStringConvertible {
     case standard(Identifier, Accessibility, Flavor)
     case sharedAccessGroup(Identifier, Accessibility, Flavor)
     
+    // MARK: Equatable
+    
+    internal static func ==(lhs: Service, rhs: Service) -> Bool {
+        return lhs.description == rhs.description
+    }
+
     // MARK: CustomStringConvertible
     
     internal var description: String {

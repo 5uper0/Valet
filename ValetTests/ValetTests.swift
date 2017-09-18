@@ -387,6 +387,14 @@ class ValetTests: XCTestCase
         ]
         // Migration queries must have kSecReturnAttributes set to true
         XCTAssertEqual(invalidQueryError, valet.migrateObjects(matchingQuery: invalidQuery, removeOnCompletion: false)?.valetMigrationError)
+        
+        invalidQuery = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecUseOperationPrompt as String: "This should fail"
+        ]
+        // Migration queries must not have kSecUseOperationPrompt set
+        XCTAssertEqual(invalidQueryError, valet.migrateObjects(matchingQuery: invalidQuery, removeOnCompletion: false)?.valetMigrationError)
+        
     }
 
     func test_migrateObjectsMatchingQuery_bailsOutIfConflictExistsInQueryResult()
@@ -446,6 +454,7 @@ class ValetTests: XCTestCase
     {
         subclassValet.setString("foo", forKey: "bar")
         valet.migrateObjects(from: subclassValet, removeOnCompletion: false)
+        valet.allKeys()
         XCTAssertEqual("foo", valet.string(forKey: "bar"))
     }
 
