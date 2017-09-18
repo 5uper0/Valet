@@ -49,7 +49,7 @@ internal enum Service: CustomStringConvertible {
         return [
             kSecClass as String : kSecClassGenericPassword as String,
             kSecAttrService as String : description,
-            kSecAttrAccessible as String : accessability.description
+            kSecAttrAccessible as String : accessability.secAccessibilityAttribute
         ]
     }
     

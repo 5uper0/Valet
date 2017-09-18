@@ -23,7 +23,7 @@ import Foundation
 
 
 public final class Valet: NSObject, KeychainQueryConvertible {
-    
+
     // MARK: Public Class Methods
     
     public class func valet(with identifier: Identifier, accessibility: Accessibility) -> Valet {
@@ -57,11 +57,15 @@ public final class Valet: NSObject, KeychainQueryConvertible {
     private init(identifier: Identifier, accessibility: Accessibility) {
         service = .standard(identifier, accessibility, .vanilla)
         keychainQuery = service.baseQuery
+        self.accessibility = accessibility
+        self.identifier = identifier
     }
     
     private init(sharedAccess identifier: Identifier, accessibility: Accessibility) {
         service = .sharedAccessGroup(identifier, accessibility, .vanilla)
         keychainQuery = service.baseQuery
+        self.accessibility = accessibility
+        self.identifier = identifier
     }
     
     // MARK: KeychainQueryConvertible
@@ -73,6 +77,11 @@ public final class Valet: NSObject, KeychainQueryConvertible {
     public override var hashValue: Int {
         return service.description.hashValue
     }
+    
+    // MARK: Public Properties
+    
+    public let accessibility: Accessibility
+    public let identifier: Identifier
     
     // MARK: Public Methods
     
@@ -102,6 +111,17 @@ public final class Valet: NSObject, KeychainQueryConvertible {
                 
             case .error:
                 return nil
+            }
+        }
+    }
+    
+    public func containsObject(for key: Key) -> Bool {
+        return execute(in: lock) {
+            switch Keychain.containsObject(for: key, options: keychainQuery) {
+            case .success:
+                return true
+            case .error:
+                return false
             }
         }
     }
