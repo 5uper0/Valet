@@ -148,7 +148,7 @@ class ValetTests: XCTestCase
         XCTAssertEqual(anotherFlavor.allKeys(), Set())
     }
 
-    // MARK: stringForKey / setStringForKey
+    // MARK: string(for:)
 
     func test_stringForKey_isNilForInvalidKey()
     {
@@ -195,6 +195,8 @@ class ValetTests: XCTestCase
 
         XCTAssertNil(anotherFlavor.string(for: "cookie"))
     }
+    
+    // MARK: set(string:for:)
 
     func test_setStringForKey_successfullyUpdatesExistingKey()
     {
@@ -203,6 +205,46 @@ class ValetTests: XCTestCase
         XCTAssertEqual("1", valet.string(for: key))
         valet.set(string: "2", for: key)
         XCTAssertEqual("2", valet.string(for: key))
+    }
+    
+    func test_setStringForKey_failsForInvalidValue() {
+        XCTAssertFalse(valet.set(string: "", for: key))
+    }
+    
+    func test_setStringForKey_failsForInvalidKey() {
+        XCTAssertFalse(valet.set(string: passcode, for: "")
+)
+    }
+    
+    // MARK: object(for:)
+    
+    func test_objectForKey_isNilForInvalidKey() {
+        XCTAssertNil(valet.object(for: key))
+    }
+    
+    func test_objectForKey_succeedsForValidKey() {
+        guard let passcodeData = passcode.data(using: .utf8), !passcodeData.isEmpty else {
+            XCTFail()
+            return
+        }
+        valet.set(object: passcodeData, for: key)
+        XCTAssertEqual(passcodeData, valet.object(for: key))
+    }
+    
+    // MARK: set(object:for:)
+    
+    func test_objectForKey_failsForInvalidKey() {
+        guard let passcodeData = passcode.data(using: .utf8), !passcodeData.isEmpty else {
+            XCTFail()
+            return
+        }
+        XCTAssertFalse(valet.set(object: passcodeData, for: ""))
+    }
+    
+    func test_objectForKey_failsForEmptyData() {
+        let emptyData = Data()
+        XCTAssert(emptyData.isEmpty)
+        XCTAssertFalse(valet.set(object: emptyData, for: key))
     }
 
     // MARK: Concurrency
