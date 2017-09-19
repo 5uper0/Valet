@@ -117,7 +117,7 @@ public final class SecureEnclaveSinglePromptValet: NSObject {
     }
     
     /// - parameter key: A Key used to retrieve the desired object from the keychain.
-    /// - parameter userPrompt: The prompt displayed to the user in Apple's Face ID, Touch ID, or passcode entry UI.
+    /// - parameter userPrompt: The prompt displayed to the user in Apple's Face ID, Touch ID, or passcode entry UI. If the `SecureEnclaveSinglePromptValet` has already been unlocked, no prompt will be shown.
     /// - returns: The data currently stored in the keychain for the provided key. Returns `nil` if no object exists in the keychain for the specified key, or if the keychain is inaccessible.
     public func object(for key: Key, withPrompt userPrompt: String) -> SecureEnclave.Result<Data> {
         return execute(in: lock) {
@@ -145,7 +145,7 @@ public final class SecureEnclaveSinglePromptValet: NSObject {
     }
     
     /// - parameter key: A Key used to retrieve the desired object from the keychain.
-    /// - parameter userPrompt: The prompt displayed to the user in Apple's Face ID, Touch ID, or passcode entry UI.
+    /// - parameter userPrompt: The prompt displayed to the user in Apple's Face ID, Touch ID, or passcode entry UI. If the `SecureEnclaveSinglePromptValet` has already been unlocked, no prompt will be shown.
     /// - returns: The string currently stored in the keychain for the provided key. Returns `nil` if no string exists in the keychain for the specified key, or if the keychain is inaccessible.
     public func string(for key: Key, withPrompt userPrompt: String) -> SecureEnclave.Result<String> {
         return execute(in: lock) {
@@ -153,7 +153,7 @@ public final class SecureEnclaveSinglePromptValet: NSObject {
         }
     }
     
-    /// Require a user to reconfirm their presence on the next query.
+    /// Forces a prompt for Face ID, Touch ID, or passcode entry on the next data retrieval from the Secure Enclave.
     public func requirePromptOnNextAccess() {
         execute(in: lock) {
             localAuthenticationContext.invalidate()
@@ -161,9 +161,9 @@ public final class SecureEnclaveSinglePromptValet: NSObject {
         }
     }
     
-    /// - parameter userPrompt: The prompt displayed to the user in Apple's Face ID, Touch ID, or passcode entry UI.
+    /// - parameter userPrompt: The prompt displayed to the user in Apple's Face ID, Touch ID, or passcode entry UI. If the `SecureEnclaveSinglePromptValet` has already been unlocked, no prompt will be shown.
     /// - returns: The set of all (String) keys currently stored in this Valet instance.
-    public func allKeys(userPrompt: String = "") -> Set<String> {
+    public func allKeys(userPrompt: String) -> Set<String> {
         return execute(in: lock) {
             var secItemQuery = keychainQuery
             if !userPrompt.isEmpty {
