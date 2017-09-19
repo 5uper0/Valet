@@ -39,7 +39,8 @@ class ValetTests: XCTestCase
 
     let key = "key"
     let passcode = "topsecret"
-
+    lazy var passcodeData: Data = { return passcode.data(using: .utf8)! }()
+    
     // MARK: XCTestCase
 
     override func setUp()
@@ -212,8 +213,7 @@ class ValetTests: XCTestCase
     }
     
     func test_setStringForKey_failsForInvalidKey() {
-        XCTAssertFalse(valet.set(string: passcode, for: "")
-)
+        XCTAssertFalse(valet.set(string: passcode, for: ""))
     }
     
     // MARK: object(for:)
@@ -223,28 +223,81 @@ class ValetTests: XCTestCase
     }
     
     func test_objectForKey_succeedsForValidKey() {
-        guard let passcodeData = passcode.data(using: .utf8), !passcodeData.isEmpty else {
-            XCTFail()
-            return
-        }
         valet.set(object: passcodeData, for: key)
         XCTAssertEqual(passcodeData, valet.object(for: key))
     }
     
+    func test_objectForKey_equivalentValetsCanAccessSameData() {
+        let equalValet = Valet.valet(with: valet.identifier, of: .vanilla(valet.accessibility))
+        XCTAssertEqual(0, equalValet.allKeys().count)
+        XCTAssertEqual(valet, equalValet)
+        XCTAssertTrue(valet.set(object: passcodeData, for: key))
+        XCTAssertEqual(passcodeData, equalValet.object(for: key))
+    }
+    
+    func test_objectForKey_withDifferingIdentifier_isNil() {
+        XCTAssertTrue(valet.set(object: passcodeData, for: key))
+        XCTAssertEqual(passcodeData, valet.object(for: key))
+        
+        let differingIdentifier = Valet.valet(with: Identifier(nonEmpty: "wat")!, of: .vanilla(valet.accessibility))
+        XCTAssertNil(differingIdentifier.object(for: key))
+    }
+    
+    func test_objectForKey_withDifferingAccessibility_isNil() {
+        XCTAssertTrue(valet.set(object: passcodeData, for: key))
+        XCTAssertEqual(passcodeData, valet.object(for: key))
+        
+        let differingAccessibility = Valet.valet(with: valet.identifier, of: .vanilla(.afterFirstUnlockThisDeviceOnly))
+        XCTAssertNil(differingAccessibility.object(for: key))
+    }
+    
+    func test_objectForKey_withEquivalentConfigurationButDifferingFlavor_isNil() {
+        XCTAssertTrue(valet.set(object: passcodeData, for: key))
+        XCTAssertEqual(passcodeData, valet.object(for: key))
+        
+        XCTAssertNil(anotherFlavor.object(for: key))
+    }
+    
     // MARK: set(object:for:)
     
-    func test_objectForKey_failsForInvalidKey() {
-        guard let passcodeData = passcode.data(using: .utf8), !passcodeData.isEmpty else {
+    func test_setObjectForKey_successfullyUpdatesExistingKey() {
+        guard let firstValue = "first".data(using: .utf8), let secondValue = "second".data(using: .utf8) else {
             XCTFail()
             return
         }
+        valet.set(object: firstValue, for: key)
+        XCTAssertEqual(firstValue, valet.object(for: key))
+        valet.set(object: secondValue, for: key)
+        XCTAssertEqual(secondValue, valet.object(for: key))
+    }
+    
+    func test_setObjectForKey_failsForInvalidKey() {
         XCTAssertFalse(valet.set(object: passcodeData, for: ""))
     }
     
-    func test_objectForKey_failsForEmptyData() {
+    func test_setObjectForKey_failsForEmptyData() {
         let emptyData = Data()
         XCTAssert(emptyData.isEmpty)
         XCTAssertFalse(valet.set(object: emptyData, for: key))
+    }
+    
+    // Mark: String/Object Equivalence
+    
+    func test_stringForKey_succeedsForDataBackedByString() {
+        XCTAssertTrue(valet.set(object: passcodeData, for: key))
+        XCTAssertEqual(passcode, valet.string(for: key))
+    }
+    
+    func test_stringForKey_failsForDataNotBackedByString() {
+        let dictionary = [ "not a" : "string" ]
+        let nonStringData = NSKeyedArchiver.archivedData(withRootObject: dictionary)
+        XCTAssertTrue(valet.set(object: nonStringData, for: key))
+        XCTAssertNil(valet.string(for: key))
+    }
+    
+    func test_objectForKey_succeedsForStrings() {
+        XCTAssertTrue(valet.set(string: passcode, for: key))
+        XCTAssertEqual(passcodeData, valet.object(for: key))
     }
 
     // MARK: Concurrency
