@@ -95,7 +95,7 @@ public final class Valet: NSObject, KeychainQueryConvertible {
             self.flavor = flavor
         }
         
-        keychainQuery = service.baseQuery
+        keychainQuery = service.generateBaseQuery()
         self.identifier = identifier
     }
     
@@ -112,7 +112,7 @@ public final class Valet: NSObject, KeychainQueryConvertible {
             self.flavor = flavor
         }
         
-        keychainQuery = service.baseQuery
+        keychainQuery = service.generateBaseQuery()
         self.identifier = identifier
     }
     

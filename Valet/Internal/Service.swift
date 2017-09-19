@@ -20,6 +20,7 @@
 //
 
 import Foundation
+import LocalAuthentication
 
 
 internal enum Service: CustomStringConvertible, Equatable {
@@ -43,9 +44,9 @@ internal enum Service: CustomStringConvertible, Equatable {
         }
     }
     
-    // MARK: Internal Properties
+    // MARK: Internal Methods
     
-    internal var baseQuery: [String : AnyHashable] {
+    internal func generateBaseQuery() -> [String : AnyHashable] {
         var service = description
         var baseQuery: [String : AnyHashable] = [
             kSecClass as String : kSecClassGenericPassword as String,
@@ -77,6 +78,8 @@ internal enum Service: CustomStringConvertible, Equatable {
             switch flavor {
             case let .singlePrompt(desiredAccessControl):
                 accessControl = desiredAccessControl
+                baseQuery[kSecUseAuthenticationContext as String] = LAContext() // TODO: Need to put control of the LAContext into SecureEnclaveValet.swift
+                
             case let .alwaysPrompt(desiredAccessControl):
                 accessControl = desiredAccessControl
             }

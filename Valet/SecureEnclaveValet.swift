@@ -86,14 +86,14 @@ public final class SecureEnclaveValet: NSObject, KeychainQueryConvertible {
     
     private init(identifier: Identifier, flavor: Flavor) {
         service = .standard(identifier, .secureEnclave(flavor))
-        keychainQuery = service.baseQuery
+        keychainQuery = service.generateBaseQuery()
         self.flavor = flavor
         self.identifier = identifier
     }
     
     private init(sharedAccess identifier: Identifier, flavor: Flavor) {
         service = .sharedAccessGroup(identifier, .secureEnclave(flavor))
-        keychainQuery = service.baseQuery
+        keychainQuery = service.generateBaseQuery()
         self.flavor = flavor
         self.identifier = identifier
     }
