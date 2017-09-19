@@ -78,7 +78,6 @@ internal enum Service: CustomStringConvertible, Equatable {
             switch flavor {
             case let .singlePrompt(desiredAccessControl):
                 accessControl = desiredAccessControl
-                baseQuery[kSecUseAuthenticationContext as String] = LAContext() // TODO: Need to put control of the LAContext into SecureEnclaveValet.swift
                 
             case let .alwaysPrompt(desiredAccessControl):
                 accessControl = desiredAccessControl

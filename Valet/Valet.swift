@@ -54,7 +54,7 @@ public final class Valet: NSObject, KeychainQueryConvertible {
     /// - parameter flavor: A description of the Valet's capabilities.
     /// - returns: A Valet that reads/writes keychain elements that can be shared across applications written by the same development team.
     public class func sharedAccessGroupValet(with identifier: Identifier, of flavor: Flavor) -> Valet {
-        let key = Service.standard(identifier, .valet(flavor)).description as NSString
+        let key = Service.sharedAccessGroup(identifier, .valet(flavor)).description as NSString
         if let existingValet = identifierToValetMap.object(forKey: key) {
             return existingValet
             
