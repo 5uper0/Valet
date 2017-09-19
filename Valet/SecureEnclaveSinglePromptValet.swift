@@ -1,8 +1,8 @@
 //
-//  SecureEnclaveValet.swift
+//  SecureEnclaveSinglePromptValet.swift
 //  Valet
 //
-//  Created by Dan Federman on 9/18/17.
+//  Created by Dan Federman on 9/19/17.
 //  Copyright © 2017 Square, Inc.
 //
 //
@@ -19,39 +19,40 @@
 //  limitations under the License.
 //
 
+import LocalAuthentication
 import Foundation
 
 
-/// Reads and writes keychain elements that are stored on the Secure Enclave using Accessibility attribute `.whenPasscodeSetThisDeviceOnly`. Accessing these keychain elements will require the user to confirm their presence via Touch ID, Face ID, or passcode entry. If no passcode is set on the device, accessing the keychain via a `SecureEnclaveValet` will fail. Data is removed from the Secure Enclave when the user removes a passcode from the device.
-public final class SecureEnclaveValet: NSObject {
+/// Reads and writes keychain elements that are stored on the Secure Enclave using Accessibility attribute `.whenPasscodeSetThisDeviceOnly`. The first access of these keychain elements will require the user to confirm their presence via Touch ID, Face ID, or passcode entry. If no passcode is set on the device, accessing the keychain via a `SecureEnclaveSinglePromptValet` will fail. Data is removed from the Secure Enclave when the user removes a passcode from the device.
+public final class SecureEnclaveSinglePromptValet: NSObject {
     
     // MARK: Public Class Methods
     
-    /// - parameter identifier: A non-empty string that uniquely identifies a SecureEnclaveValet.
-    /// - parameter flavor: A description of the SecureEnclaveValet's capabilities.
-    /// - returns: A SecureEnclaveValet that reads/writes keychain elements with the desired flavor.
-    public class func valet(with identifier: Identifier, accessControl: SecureEnclaveAccessControl) -> SecureEnclaveValet {
-        let key = Service.standard(identifier, .secureEnclave(.alwaysPrompt(accessControl))).description as NSString
+    /// - parameter identifier: A non-empty string that uniquely identifies a SecureEnclaveSinglePromptValet.
+    /// - parameter flavor: A description of the SecureEnclaveSinglePromptValet's capabilities.
+    /// - returns: A SecureEnclaveSinglePromptValet that reads/writes keychain elements with the desired flavor.
+    public class func valet(with identifier: Identifier, accessControl: SecureEnclaveAccessControl) -> SecureEnclaveSinglePromptValet {
+        let key = Service.standard(identifier, .secureEnclave(.singlePrompt(accessControl))).description as NSString
         if let existingValet = identifierToValetMap.object(forKey: key) {
             return existingValet
             
         } else {
-            let valet = SecureEnclaveValet(identifier: identifier, accessControl: accessControl)
+            let valet = SecureEnclaveSinglePromptValet(identifier: identifier, accessControl: accessControl)
             identifierToValetMap.setObject(valet, forKey: key)
             return valet
         }
     }
     
     /// - parameter identifier: A non-empty string that must correspond with the value for keychain-access-groups in your Entitlements file.
-    /// - parameter flavor: A description of the SecureEnclaveValet's capabilities.
-    /// - returns: A SecureEnclaveValet that reads/writes keychain elements that can be shared across applications written by the same development team.
-    public class func sharedAccessGroupValet(with identifier: Identifier, accessControl: SecureEnclaveAccessControl) -> SecureEnclaveValet {
-        let key = Service.sharedAccessGroup(identifier, .secureEnclave(.alwaysPrompt(accessControl))).description as NSString
+    /// - parameter flavor: A description of the SecureEnclaveSinglePromptValet's capabilities.
+    /// - returns: A SecureEnclaveSinglePromptValet that reads/writes keychain elements that can be shared across applications written by the same development team.
+    public class func sharedAccessGroupValet(with identifier: Identifier, accessControl: SecureEnclaveAccessControl) -> SecureEnclaveSinglePromptValet {
+        let key = Service.sharedAccessGroup(identifier, .secureEnclave(.singlePrompt(accessControl))).description as NSString
         if let existingValet = identifierToValetMap.object(forKey: key) {
             return existingValet
             
         } else {
-            let valet = SecureEnclaveValet(sharedAccess: identifier, accessControl: accessControl)
+            let valet = SecureEnclaveSinglePromptValet(sharedAccess: identifier, accessControl: accessControl)
             identifierToValetMap.setObject(valet, forKey: key)
             return valet
         }
@@ -60,13 +61,13 @@ public final class SecureEnclaveValet: NSObject {
     // MARK: Equatable
     
     /// - returns: `true` if lhs and rhs both read from and write to the same sandbox within the keychain.
-    public static func ==(lhs: SecureEnclaveValet, rhs: SecureEnclaveValet) -> Bool {
+    public static func ==(lhs: SecureEnclaveSinglePromptValet, rhs: SecureEnclaveSinglePromptValet) -> Bool {
         return lhs.service == rhs.service
     }
     
     // MARK: Private Class Properties
     
-    private static let identifierToValetMap = NSMapTable<NSString, SecureEnclaveValet>.strongToWeakObjects()
+    private static let identifierToValetMap = NSMapTable<NSString, SecureEnclaveSinglePromptValet>.strongToWeakObjects()
     
     // MARK: Initialization
     
@@ -76,17 +77,15 @@ public final class SecureEnclaveValet: NSObject {
     }
     
     private init(identifier: Identifier, accessControl: SecureEnclaveAccessControl) {
-        service = .standard(identifier, .secureEnclave(SecureEnclave.Flavor.alwaysPrompt(accessControl)))
-        keychainQuery = service.generateBaseQuery()
+        service = .standard(identifier, .secureEnclave(.singlePrompt(accessControl)))
+        baseKeychainQuery = service.generateBaseQuery()
         self.identifier = identifier
-        self.accessControl = accessControl
     }
     
     private init(sharedAccess identifier: Identifier, accessControl: SecureEnclaveAccessControl) {
-        service = .sharedAccessGroup(identifier, .secureEnclave(SecureEnclave.Flavor.alwaysPrompt(accessControl)))
-        keychainQuery = service.generateBaseQuery()
+        service = .sharedAccessGroup(identifier, .secureEnclave(.singlePrompt(accessControl)))
+        baseKeychainQuery = service.generateBaseQuery()
         self.identifier = identifier
-        self.accessControl = accessControl
     }
     
     // MARK: Hashable
@@ -98,7 +97,6 @@ public final class SecureEnclaveValet: NSObject {
     // MARK: Public Properties
     
     public let identifier: Identifier
-    public let accessControl: SecureEnclaveAccessControl
     
     // MARK: Public Methods
     
@@ -155,6 +153,33 @@ public final class SecureEnclaveValet: NSObject {
         }
     }
     
+    /// Require a user to reconfirm their presence on the next query.
+    public func requirePromptOnNextAccess() {
+        execute(in: lock) {
+            localAuthenticationContext.invalidate()
+            localAuthenticationContext = LAContext()
+        }
+    }
+    
+    /// - parameter userPrompt: The prompt displayed to the user in Apple's Face ID, Touch ID, or passcode entry UI.
+    /// - returns: The set of all (String) keys currently stored in this Valet instance.
+    public func allKeys(userPrompt: String = "") -> Set<String> {
+        return execute(in: lock) {
+            var secItemQuery = keychainQuery
+            if !userPrompt.isEmpty {
+                secItemQuery[kSecUseOperationPrompt as String] = userPrompt
+            }
+            
+            switch Keychain.allKeys(options: secItemQuery) {
+            case let .success(allKeys):
+                return allKeys
+                
+            case .error:
+                return Set()
+            }
+        }
+    }
+    
     /// Removes a key/object pair from the keychain.
     /// - returns: `false` if the keychain is not accessible.
     @discardableResult
@@ -189,5 +214,12 @@ public final class SecureEnclaveValet: NSObject {
     
     private let service: Service
     private let lock = NSLock()
-    private let keychainQuery: [String : AnyHashable]
+    private let baseKeychainQuery: [String : AnyHashable]
+    private var localAuthenticationContext = LAContext()
+    
+    private var keychainQuery: [String : AnyHashable] {
+        var keychainQuery = baseKeychainQuery
+        keychainQuery[kSecUseAuthenticationContext as String] = localAuthenticationContext
+        return keychainQuery
+    }
 }

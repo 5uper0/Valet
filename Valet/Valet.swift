@@ -84,6 +84,8 @@ public final class Valet: NSObject, KeychainQueryConvertible {
     }
     
     private init(identifier: Identifier, flavor: Flavor) {
+        self.identifier = identifier
+        
         switch flavor {
         case let .vanilla(accessibility):
             service = .standard(identifier, .valet(flavor))
@@ -96,10 +98,11 @@ public final class Valet: NSObject, KeychainQueryConvertible {
         }
         
         keychainQuery = service.generateBaseQuery()
-        self.identifier = identifier
     }
     
     private init(sharedAccess identifier: Identifier, flavor: Flavor) {
+        self.identifier = identifier
+        
         switch flavor {
         case let .vanilla(accessibility):
             service = .sharedAccessGroup(identifier, .valet(flavor))
@@ -113,7 +116,6 @@ public final class Valet: NSObject, KeychainQueryConvertible {
         }
         
         keychainQuery = service.generateBaseQuery()
-        self.identifier = identifier
     }
     
     // MARK: KeychainQueryConvertible

@@ -24,7 +24,7 @@ import Foundation
 
 internal enum Configuration: CustomStringConvertible {
     case valet(Valet.Flavor)
-    case secureEnclave(SecureEnclaveValet.Flavor)
+    case secureEnclave(SecureEnclave.Flavor)
     
     // MARK: CustomStringConvertible
     

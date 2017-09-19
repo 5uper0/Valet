@@ -73,6 +73,8 @@ internal enum Service: CustomStringConvertible, Equatable {
                 baseQuery[kSecAttrSynchronizable as String] = true
             }
             
+            baseQuery[kSecAttrAccessible as String] = configuration.accessability.secAccessibilityAttribute
+            
         case let .secureEnclave(flavor):
             let accessControl: SecureEnclaveAccessControl
             switch flavor {
@@ -84,11 +86,11 @@ internal enum Service: CustomStringConvertible, Equatable {
             }
             
             service += accessControl.description
+            // Note that kSecAttrAccessControl and kSecAttrAccessible are mutually exclusive.
             baseQuery[kSecAttrAccessControl as String] = SecAccessControlCreateWithFlags(nil, kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly, accessControl.secAccessControl, nil)
         }
         
         baseQuery[kSecAttrService as String] = service
-        baseQuery[kSecAttrAccessible as String] = configuration.accessability.secAccessibilityAttribute
         return baseQuery
     }
     
