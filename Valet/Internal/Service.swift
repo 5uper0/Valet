@@ -92,6 +92,5 @@ internal enum Service: CustomStringConvertible, Equatable {
         
         baseQuery[kSecAttrService as String] = service
         return baseQuery
-    }
-    
+    }    
 }

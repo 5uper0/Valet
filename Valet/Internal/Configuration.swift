@@ -64,5 +64,4 @@ internal enum Configuration: CustomStringConvertible {
             return Accessibility.whenPasscodeSetThisDeviceOnly
         }
     }
-    
 }

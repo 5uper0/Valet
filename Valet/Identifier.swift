@@ -45,5 +45,4 @@ public struct Identifier: CustomStringConvertible {
     // MARK: Private Properties
     
     private let backingString: String
-    
 }

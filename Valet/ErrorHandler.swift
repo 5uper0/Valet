@@ -45,5 +45,4 @@ public final class ErrorHandler {
     public static func assertionFailure(_ message: String, file: StaticString = #file, line: UInt = #line) -> Void {
         assert(false, message, file: file, line: line)
     }
-    
 }

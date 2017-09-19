@@ -26,7 +26,7 @@ public enum SecureEnclaveAccessControl: CustomStringConvertible {
     /// Access to keychain elements requires user presence verification via Touch ID, Face ID, or device Passcode. Keychain elements are still accessible by Touch ID even if fingers are added or removed. Touch ID does not have to be available or enrolled.
     @available(macOS 10.11, iOS 8.0, *)
     case userPresence
-
+    
     /// Access to keychain elements requires user presence verification via Face ID, or any finger enrolled in Touch ID. Keychain elements remain accessible via Face ID or Touch ID  after faces or fingers are added or removed. Face ID must be enabled with at least one face enrolled, or Touch ID must be available and at least one finger must be enrolled.
     @available(macOS 10.12, iOS 9.0, *)
     case biometricAny
