@@ -104,10 +104,11 @@ public final class Valet: NSObject, KeychainQueryConvertible {
         case let .vanilla(accessibility):
             service = .standard(identifier, accessibility, .vanilla)
             self.accessibility = accessibility
-            
+            self.flavor = flavor
         case let .synchronizable(synchronizableAccessibility):
             service = .standard(identifier, synchronizableAccessibility.accessibility, .synchronizable)
             accessibility = synchronizableAccessibility.accessibility
+            self.flavor = flavor
         }
         
         keychainQuery = service.baseQuery
@@ -119,10 +120,12 @@ public final class Valet: NSObject, KeychainQueryConvertible {
         case let .vanilla(accessibility):
             service = .sharedAccessGroup(identifier, accessibility, .vanilla)
             self.accessibility = accessibility
+            self.flavor = flavor
             
         case let .synchronizable(synchronizableAccessibility):
             service = .sharedAccessGroup(identifier, synchronizableAccessibility.accessibility, .synchronizable)
             accessibility = synchronizableAccessibility.accessibility
+            self.flavor = flavor
         }
         
         keychainQuery = service.baseQuery
@@ -143,6 +146,7 @@ public final class Valet: NSObject, KeychainQueryConvertible {
     
     public let accessibility: Accessibility
     public let identifier: Identifier
+    public let flavor: Flavor
     
     // MARK: Public Methods
     
