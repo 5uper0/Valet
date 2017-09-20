@@ -64,14 +64,14 @@ public enum SecureEnclaveAccessControl: CustomStringConvertible, Equatable {
         case .userPresence:
             return .userPresence
         case .biometricAny:
-            if #available(OSXApplicationExtension 10.12.1, *) {
+            if #available(macOS 10.12.1, *) {
                 return .touchIDAny
             } else {
                 // We should never hit since .biometricAny requires macOS 10.12.1.
                 return .userPresence
             }
         case .biometricCurrentSet:
-            if #available(OSXApplicationExtension 10.12.1, *) {
+            if #available(macOS 10.12.1, *) {
                 return .touchIDCurrentSet
             } else {
                 // We should never hit since .biometricCurrentSet requires macOS 10.12.1.
