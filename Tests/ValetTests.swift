@@ -19,7 +19,7 @@
 //
 
 import Foundation
-import Valet
+@testable import Valet
 import XCTest
 
 
@@ -29,21 +29,6 @@ import XCTest
 func testEnvironmentIsSigned() -> Bool {
     // Our test host apps for iOS and Mac are both signed, so testing for a bundle identifier is analogous to testing signing.
     return Bundle.main.bundleIdentifier != nil
-}
-
-
-fileprivate extension Accessibility {
-    static func allValues() -> [Accessibility] {
-        return [
-            .whenUnlocked,
-            .afterFirstUnlock,
-            .always,
-            .whenPasscodeSetThisDeviceOnly,
-            .whenUnlockedThisDeviceOnly,
-            .afterFirstUnlockThisDeviceOnly,
-            .alwaysThisDeviceOnly
-        ]
-    }
 }
 
 
