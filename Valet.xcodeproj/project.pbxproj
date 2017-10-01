@@ -644,7 +644,6 @@
 						CreatedOnToolsVersion = 6.3.2;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
-						TestTargetID = 16B5856B1F71DBE00038EE30;
 					};
 					EAF894731B053E0400EDAD6C = {
 						CreatedOnToolsVersion = 6.3.1;
@@ -1319,7 +1318,6 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Tests/ValetTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Valet macOS Test Host App.app/Contents/MacOS/Valet macOS Test Host App";
 			};
 			name = Debug;
 		};
@@ -1344,7 +1342,6 @@
 				SDKROOT = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = "Tests/ValetTests-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Valet macOS Test Host App.app/Contents/MacOS/Valet macOS Test Host App";
 			};
 			name = Release;
 		};
