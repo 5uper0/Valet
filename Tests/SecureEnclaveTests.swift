@@ -149,7 +149,7 @@ class SecureEnclaveTests: XCTestCase
         
         let plainOldValet = Valet.valet(with: Identifier(nonEmpty: "Migrate_Me")!, of: .vanilla(.afterFirstUnlock))
         
-        // Clean up any dangling keychain items before we start this tests.
+        // Clean up any dangling keychain items before we start this test.
         valet.removeAllObjects()
         plainOldValet.removeAllObjects()
         

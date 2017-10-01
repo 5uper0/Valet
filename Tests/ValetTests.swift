@@ -700,7 +700,7 @@ class ValetTests: XCTestCase
     func test_migrateObjectsFromValetRemoveOnCompletion_migratesDataSuccessfullyWhenBothValetsHavePreviouslyCalled_canAccessKeychain() {
         let otherValet = Valet.valet(with: Identifier(nonEmpty: "Migrate_Me_To_Valet")!, of: .vanilla(.afterFirstUnlock))
 
-        // Clean up any dangling keychain items before we start this tests.
+        // Clean up any dangling keychain items before we start this test.
         otherValet.removeAllObjects()
 
         let keyStringPairToMigrateMap = ["foo" : "bar", "testing" : "migration", "is" : "quite", "entertaining" : "if", "you" : "don't", "screw" : "up"]
