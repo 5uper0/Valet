@@ -22,8 +22,6 @@
 
 #import <XCTest/XCTest.h>
 
-#import "ValetTests.h"
-
 
 // FIXME: emuller - coming soon
 @interface SwiftInteropTests : XCTestCase
