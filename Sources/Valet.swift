@@ -321,7 +321,6 @@ public final class Valet: NSObject, KeychainQueryConvertible {
 
 // MARK: - Objective C Compatibility
 
-
 extension Valet {
 
     // MARK: Public Class Methods
@@ -329,6 +328,7 @@ extension Valet {
     /// - parameter identifier: A non-empty string that uniquely identifies a Valet.
     /// - parameter accessibility: The desired accessibility for the Valet.
     /// - returns: A Valet that reads/writes keychain elements with the desired accessibility.
+    @available(swift, obsoleted: 1.0)
     @objc(vanillaValetWithIdentifier:accessibility:)
     public class func notforswift_vanillaValet(with identifier: Identifier, accessibility: Accessibility) -> Valet {
         return valet(with: identifier, of: .vanilla(accessibility))
