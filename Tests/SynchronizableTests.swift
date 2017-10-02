@@ -124,6 +124,10 @@ class SynchronizableTests: XCTestCase
     // MARK: Backwards Compatibility
     
     func test_backwardsCompatibility_withLegacyValet() {
+        guard testEnvironmentIsSigned() else {
+            return
+        }
+
         for permutation in Valet.iCloudPermutations(valet.identifier) {
             let legacyValet = VALSynchronizableValet(identifier: permutation.legacyIdentifier, accessibility: permutation.legacyAccessibility)!
             legacyValet.setString(passcode, forKey: key)
