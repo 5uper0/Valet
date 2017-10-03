@@ -27,7 +27,7 @@ public final class Valet: NSObject, KeychainQueryConvertible {
     
     // MARK: Flavor
     
-    public enum Flavor: Equatable, CustomStringConvertible {
+    public enum Flavor: CustomStringConvertible, Equatable {
         /// Reads and writes keychain elements that do not sync to other devices.
         case vanilla(Accessibility)
         /// Reads and writes keychain elements that are synchronized with iCloud.
